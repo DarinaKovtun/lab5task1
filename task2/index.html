@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма реєстрації користувача</title>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Реєстраційна форма</h1>
+    <form id="registrationForm" onsubmit="return validateForm()">
+        <label for="username">Ім'я користувача (*):</label>
+        <input type="text" id="username" name="username"><br><br>
+
+        <label for="integer">Ціле число (*):</label>
+        <input type="text" id="integer" name="integer"><br><br>
+
+        <label for="float">Дійсне число (*):</label>
+        <input type="text" id="float" name="float"><br><br>
+
+        <label for="date">Дата (DD.MM.YYYY) (*):</label>
+        <input type="text" id="date" name="date"><br><br>
+
+        <label for="password">Пароль (*):</label>
+        <input type="password" id="password" name="password"><br><br>
+
+        <label for="confirmPassword">Підтвердіть пароль (*):</label>
+        <input type="password" id="confirmPassword" name="confirmPassword"><br><br>
+
+        <button type="submit">Зареєструватись</button>
+    </form>
+
+    <script>
+        function validateForm() {
+            let isValid = true;
+            const errorMessages = {
+                required: "Це поле є обов'язковим.",
+                integer: "Будь ласка, введіть ціле число.",
+                float: "Будь ласка, введіть дійсне число.",
+                date: "Будь ласка, введіть дату у форматі DD.MM.YYYY.",
+                passwordMatch: "Паролі не співпадають."
+            };
+
+            // Helper functions for validation
+            const isInteger = (value) => /^-?\d+$/.test(value);
+            const isFloat = (value) => /^-?\d+(\.\d+)?$/.test(value);
+            const isValidDate = (value) => /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[012])\.(\d{4})$/.test(value);
+
+            // Clear previous error messages
+            const errors = document.querySelectorAll('.error');
+            errors.forEach(error => error.remove());
+
+            // Validate required fields
+            const requiredFields = document.querySelectorAll('#registrationForm [name]:required');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    showError(field, errorMessages.required);
+                    isValid = false;
+                }
+            });
+
+            // Validate integer
+            const integerField = document.getElementById('integer');
+            if (integerField.value.trim() && !isInteger(integerField.value.trim())) {
+                showError(integerField, errorMessages.integer);
+                isValid = false;
+            }
+
+            // Validate float
+            const floatField = document.getElementById('float');
+            if (floatField.value.trim() && !isFloat(floatField.value.trim())) {
+                showError(floatField, errorMessages.float);
+                isValid = false;
+            }
+
+            // Validate date
+            const dateField = document.getElementById('date');
+            if (dateField.value.trim() && !isValidDate(dateField.value.trim())) {
+                showError(dateField, errorMessages.date);
+                isValid = false;
+            }
+
+            // Validate password match
+            const passwordField = document.getElementById('password');
+            const confirmPasswordField = document.getElementById('confirmPassword');
+            if (passwordField.value !== confirmPasswordField.value) {
+                showError(confirmPasswordField, errorMessages.passwordMatch);
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function showError(field, message) {
+            const error = document.createElement('span');
+            error.className = 'error';
+            error.innerText = message;
+            field.parentNode.insertBefore(error, field.nextSibling);
+        }
+    </script>
+</body>
+</html>
